@@ -1,10 +1,10 @@
 import pyttsx3
 
-# Inicjalizacja syntezatora mowy
+# Initialize the speech synthesizer
 engine = pyttsx3.init()
 
-# Mieszkania z unikalnymi 4-cyfrowymi kodami
-Mieszkanie = {
+# Apartments with unique 4-digit codes
+Apartment = {
     1: "1234", 2: "2345", 3: "3456", 4: "4567", 5: "5678",
     6: "6789", 7: "7890", 8: "8901", 9: "9012", 10: "0123",
     11: "1111", 12: "2222", 13: "3333", 14: "4444", 15: "5555",
@@ -16,55 +16,55 @@ Mieszkanie = {
     41: "1350", 42: "2461", 43: "3572", 44: "4683"
 }
 
-# Limit prób na wpisanie kodu
-MAX_PROBY = 3  
+# Maximum number of attempts to enter the code
+MAX_ATTEMPTS = 3  
 
-# Wyświetlenie klawiatury
+# Displaying the keypad
 print("1 2 3")
 print("4 5 6")
 print("7 8 9")
 print("* 0 #")
 
-# Instrukcja głosowa
-engine.say("Wciśnij hasz ##, aby rozpocząć")
+# Voice instruction
+engine.say("Press hash ## to start")
 engine.runAndWait()
 
-# Odczyt wciśniętego klawisza
-start = input("Wciśnij #: ")
+# Read the pressed key
+start = input("Press #: ")
 
-# Sprawdzenie, czy użytkownik nacisnął #
+# Check if the user pressed #
 if start != "#":
-    engine.say("Musisz wcisnąć #, aby kontynuować!")
+    engine.say("You must press # to continue!")
     engine.runAndWait()
     exit()
 
-# Prośba o numer mieszkania
-engine.say("Teraz wpisz numer mieszkania")
+# Request apartment number
+engine.say("Now, enter the apartment number")
 engine.runAndWait()
 
-wpisane_mieszkanie = input("Podaj numer mieszkania: ")
+entered_apartment = input("Enter apartment number: ")
 
-# Sprawdzenie, czy mieszkanie to liczba i czy jest w zakresie 1-44
-if not wpisane_mieszkanie.isdigit() or int(wpisane_mieszkanie) not in Mieszkanie:
-    engine.say("Wpisz mieszkanie od 1 do 44")
+# Check if the apartment number is valid and in range 1-44
+if not entered_apartment.isdigit() or int(entered_apartment) not in Apartment:
+    engine.say("Enter an apartment number between 1 and 44")
     engine.runAndWait()
     exit()
 
-mieszkanie = int(wpisane_mieszkanie)  # Konwersja na int
+apartment = int(entered_apartment)  # Convert to int
 
-# Pętla prób wpisania kodu
-for proba in range(1, MAX_PROBY + 1):
-    engine.say("Wpisz czterocyfrowy kod")
+# Loop for code entry attempts
+for attempt in range(1, MAX_ATTEMPTS + 1):
+    engine.say("Enter the four-digit code")
     engine.runAndWait()
-    wpisany_kod = input(f"Próba {proba}/{MAX_PROBY} - Podaj czterocyfrowy kod: ")
+    entered_code = input(f"Attempt {attempt}/{MAX_ATTEMPTS} - Enter four-digit code: ")
 
-    if wpisany_kod == Mieszkanie[mieszkanie]:
-        engine.say("Drzwi otwarte! Proszę wejść!")
+    if entered_code == Apartment[apartment]:
+        engine.say("The door is open! Please enter!")
         engine.runAndWait()
-        exit()  # Wyjście z programu po poprawnym kodzie
+        exit()  # Exit the program after the correct code
     else:
-        engine.say("Niepoprawny kod!")
+        engine.say("Incorrect code!")
 
-# Jeśli użytkownik nie wpisał poprawnego kodu po 3 próbach
-engine.say("Za dużo niepoprawnych prób! Dostęp zablokowany.")
+# If the user failed to enter the correct code after 3 attempts
+engine.say("Too many incorrect attempts! Access blocked.")
 engine.runAndWait()
