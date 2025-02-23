@@ -1,0 +1,70 @@
+import pyttsx3
+
+# Inicjalizacja syntezatora mowy
+engine = pyttsx3.init()
+
+# Mieszkania z unikalnymi 4-cyfrowymi kodami
+Mieszkanie = {
+    1: "1234", 2: "2345", 3: "3456", 4: "4567", 5: "5678",
+    6: "6789", 7: "7890", 8: "8901", 9: "9012", 10: "0123",
+    11: "1111", 12: "2222", 13: "3333", 14: "4444", 15: "5555",
+    16: "6666", 17: "7777", 18: "8888", 19: "9999", 20: "0000",
+    21: "1357", 22: "2468", 23: "3579", 24: "4680", 25: "5791",
+    26: "6802", 27: "7913", 28: "8024", 29: "9135", 30: "0246",
+    31: "1359", 32: "2460", 33: "3571", 34: "4682", 35: "5793",
+    36: "6804", 37: "7915", 38: "8026", 39: "9137", 40: "9870",
+    41: "1350", 42: "2461", 43: "3572", 44: "4683"
+}
+
+# Limit prób na wpisanie kodu
+MAX_PROBY = 3  
+
+# Wyświetlenie klawiatury
+print("1 2 3")
+print("4 5 6")
+print("7 8 9")
+print("* 0 #")
+
+# Instrukcja głosowa
+engine.say("Wciśnij hasz ##, aby rozpocząć")
+engine.runAndWait()
+
+# Odczyt wciśniętego klawisza
+start = input("Wciśnij #: ")
+
+# Sprawdzenie, czy użytkownik nacisnął #
+if start != "#":
+    engine.say("Musisz wcisnąć #, aby kontynuować!")
+    engine.runAndWait()
+    exit()
+
+# Prośba o numer mieszkania
+engine.say("Teraz wpisz numer mieszkania")
+engine.runAndWait()
+
+wpisane_mieszkanie = input("Podaj numer mieszkania: ")
+
+# Sprawdzenie, czy mieszkanie to liczba i czy jest w zakresie 1-44
+if not wpisane_mieszkanie.isdigit() or int(wpisane_mieszkanie) not in Mieszkanie:
+    engine.say("Wpisz mieszkanie od 1 do 44")
+    engine.runAndWait()
+    exit()
+
+mieszkanie = int(wpisane_mieszkanie)  # Konwersja na int
+
+# Pętla prób wpisania kodu
+for proba in range(1, MAX_PROBY + 1):
+    engine.say("Wpisz czterocyfrowy kod")
+    engine.runAndWait()
+    wpisany_kod = input(f"Próba {proba}/{MAX_PROBY} - Podaj czterocyfrowy kod: ")
+
+    if wpisany_kod == Mieszkanie[mieszkanie]:
+        engine.say("Drzwi otwarte! Proszę wejść!")
+        engine.runAndWait()
+        exit()  # Wyjście z programu po poprawnym kodzie
+    else:
+        engine.say("Niepoprawny kod!")
+
+# Jeśli użytkownik nie wpisał poprawnego kodu po 3 próbach
+engine.say("Za dużo niepoprawnych prób! Dostęp zablokowany.")
+engine.runAndWait()
