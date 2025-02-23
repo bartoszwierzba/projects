@@ -1,0 +1,53 @@
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqUtils import MeltingTemp as mt
+
+# Function to replace unknown amino acids
+def clean_sequence(sequence):
+    # Replace 'I' with 'A' or another safe DNA letter
+    return sequence.replace('I', 'A')
+
+# Read sequence from FASTA file
+with open("babesia.fasta") as handle:  # Replace with the correct path to the FASTA file
+    record = SeqIO.read(handle, "fasta")  # Read the first record
+    seq_protein = record.seq
+
+# Check if the sequence was read correctly
+print("Amino acid sequence:", seq_protein)
+
+# Clean the sequence from unknown amino acids
+seq_protein_cleaned = clean_sequence(seq_protein)
+
+# Create a Biopython sequence object
+seq_protein_cleaned = Seq(seq_protein_cleaned)
+
+# Back-translate the amino acid sequence to DNA
+seq_dna = seq_protein_cleaned.back_transcribe()
+
+# Print the translated DNA sequence
+print("DNA sequence:", seq_dna)
+
+# Function to design primers
+def design_primers(sequence, primer_length=20):
+    primers = []
+    
+    # Generate forward primer
+    forward_primer = sequence[:primer_length]
+    # Generate reverse primer (reverse complement)
+    reverse_primer = sequence[-primer_length:].reverse_complement()
+
+    primers.append((forward_primer, reverse_primer))
+    
+    return primers
+
+# Function to calculate melting temperature (Tm)
+def calculate_tm(primer):
+    return mt.Tm_NN(primer)
+
+# Design primers
+primers = design_primers(seq_dna)
+
+# Display results
+for forward, reverse in primers:
+    print(f"Forward Primer: {forward}, Tm: {calculate_tm(forward)}")
+    print(f"Reverse Primer: {reverse}, Tm: {calculate_tm(reverse)}")
